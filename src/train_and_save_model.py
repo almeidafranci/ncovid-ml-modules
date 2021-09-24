@@ -1,9 +1,7 @@
 import pandas as pd
-import numpy as np
 
 import data_manner
-import model_manner
-
+from src.models import lstm_manner
 
 week_size = 7
 data = pd.read_csv(f"http://ncovid.natalnet.br/datamanager/repo/p971074907/path/brl:rn/feature/date:newCases:deaths:/begin/2020-05-01/end/2021-05-01/as-csv", index_col='date')
@@ -19,7 +17,7 @@ train, test = data_manner.build_data(data_final, step_size=week_size, size_data_
 
 model_config = [week_size, 250, 0.0, train.x.shape[2]]
 
-regressor = model_manner.build_model(model_config)
+regressor = lstm_manner.build_model(model_config)
 
 regressor.fit_model(train, epochs=100, batch_size=32, verbose=0)
 
