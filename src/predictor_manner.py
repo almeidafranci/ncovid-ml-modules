@@ -31,16 +31,18 @@ def predict_for_rquest(responsed_data):
 
     return prediction.reshape(-1)
 
-def convert_output_to_json(output_of_prediction, begin, end):
+def convert_to_string_format(output_of_prediction, begin, end):
 
     time_interval = pd.date_range(begin, end)
 
     returned_dictionaty = []
     for date, value in zip(time_interval, output_of_prediction):
-        returned_dictionaty.append({"date": str(date)[:10], "deaths": str(value)})
+        str_value = str(value)
+        str_date = datetime.datetime.strftime(date, "%Y-%m-%d")
+        returned_dictionaty.append({"date": str_date, "deaths": str_value})
 
-    returned_json = json.dumps(str(returned_dictionaty), indent=3, separators=(",", ":"))
-    return returned_json
+    returned_str = str(returned_dictionaty)
+    return returned_str
 
 def time_delay(begin):
     start_date = datetime.datetime.strptime(begin, "%Y-%m-%d") - datetime.timedelta(days=7)
@@ -66,6 +68,6 @@ def predict(repo, path, feature, begin, end):
 
     predicted_values = predict_for_rquest(requested_data)
 
-    predictied_json = convert_output_to_json(predicted_values, original_begin, original_end)
+    predictied_json = convert_to_string_format(predicted_values, original_begin, original_end)
 
     return predictied_json
