@@ -3,13 +3,12 @@ from math import sqrt
 from sklearn.metrics import mean_squared_error
 from tensorflow.keras.callbacks import EarlyStopping
 
-import src.configuration as configs
+
+import configs_manner as configs
 
 
 class ModelInterface:
-    def __init__(self, n_inputs, n_nodes, n_features, dropout=0.0, n_outputs=None):
-        self.config = [str(n_inputs), str(n_nodes), str(n_features), str(dropout)]
-
+    def __init__(self, n_inputs, n_nodes, n_features, dropout, n_outputs=None):
         self.n_inputs = n_inputs
         self.n_nodes = n_nodes
         self.n_features = n_features
@@ -22,6 +21,16 @@ class ModelInterface:
             self.n_outputs = n_inputs
         self.model = None
 
+    def save_model(self, locale):
+        self.model.save(
+            "../dbs/fitted_model/" +
+            locale + "_" +
+            self.__class__.__name__ + "_" +
+            str(self.n_inputs) + "_" +
+            str(self.n_features) + "_" +
+            str(self.n_nodes) +
+            ".h5")
+
     def fit_model(self, x, y, verbose=0):
         self.model.fit(x=x,
                        y=y,
@@ -29,11 +38,12 @@ class ModelInterface:
                        batch_size=configs.model_batch_size,
                        verbose=verbose,
                        callbacks=[self.stop_training])
-        return self.model
+
+        return True
 
     def make_predictions(self, data):
         """
-        Make model predictions over data
+        Make predictions (often test data)
         :param data: data to make predictions
         :return: prediction and prediction's rmse
         """

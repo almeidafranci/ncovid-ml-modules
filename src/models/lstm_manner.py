@@ -1,16 +1,14 @@
 import numpy as np
-
+from models.model_interface import ModelInterface
 from tensorflow.keras.layers import Dense, Input, Dropout
 from tensorflow.keras.layers import LSTM, RepeatVector, TimeDistributed
 from tensorflow.keras.models import Model
 
-from models.model_interface import ModelInterface
-
 
 class ModelLSTM(ModelInterface):
 
-    def __init__(self, n_inputs, n_nodes, dropout, n_features):
-        super().__init__(n_inputs, n_nodes, dropout, n_features)
+    def __init__(self, n_inputs=7, n_nodes=128, n_features=1, dropout=0.0):
+        super().__init__(n_inputs, n_nodes, n_features, dropout)
         self.timesteps = self.n_inputs
         self.model = self.__model_architecture()
 
@@ -26,3 +24,10 @@ class ModelLSTM(ModelInterface):
         model = Model(inputs=input_model, outputs=output_model)
         model.compile(loss='mse', optimizer='adam')
         return model
+
+    def __str__(self):
+        return f'\nLSTM Model' \
+               f'\n\tinput, output and timesteps: {self.n_inputs}' \
+               f'\n\tlstm nodes: {self.n_nodes}' \
+               f'\n\tfeatures: {self.n_features}' \
+               f'\n\tdropout: {self.dropout}'

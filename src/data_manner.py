@@ -3,6 +3,7 @@ from math import sqrt
 import numpy as np
 from sklearn.metrics import mean_squared_error
 
+import configs_manner
 
 class DataConstructor:
     def __init__(self, step_size, is_training=False, type_norm=None):
@@ -80,8 +81,12 @@ class Train(Data):
     def __init__(self, data, step_size, type_norm=None):
         super().__init__(step_size, type_norm)
         x, y = Train.walk_forward(data, step_size)
-        self.x_labeled = x[:, :, : 1]
-        self.x = x[:, :, 1:]  # self.x = x
+        
+        #self.x_labeled = x[:, :, : 1]
+        if configs_manner.model_is_output_in_input:
+            self.x = x
+        else:
+            self.x = x[:, :, 1:]
         self.y = y.reshape((y.shape[0], y.shape[1], 1))
 
     @staticmethod
@@ -107,6 +112,11 @@ class Train(Data):
 class Test(Data):
     def __init__(self, data, step_size, type_norm=None):
         super().__init__(step_size, type_norm)
-        self.x = data[:, :, 1:]  # self.x = x
-        self.y = data[:, :, :1]
+
+        if configs_manner.model_is_output_in_input:
+            self.x = data[:-1, :, :]
+        else:
+            self.x = data[:-1, :, 1:]
+        
+        self.y = data[1:, :, :1]
         self.y = self.y.reshape((self.y.shape[0], self.y.shape[1], 1))

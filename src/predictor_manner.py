@@ -19,14 +19,13 @@ def initial_data_processing(data_for_processing):
     return data_final
 
 def predict_for_rquest(responsed_data):
-
     data = initial_data_processing(responsed_data)
 
     week_size = 7
     data_obj = data_manner.DataConstructor(week_size, is_training=False, type_norm=None)
     data_to_predict = data_obj.build_test(data)
-
-    model_loaded = load_model('models/model_test_to_load')
+    
+    model_loaded = load_model('models/data_p971074907_diff')
     prediction = model_loaded.predict(data_to_predict.x, verbose=0)
 
     return prediction.reshape(-1)
@@ -53,7 +52,7 @@ def time_skip_for_predict(begin, end):
     end_date = datetime.datetime.strptime(end, "%Y-%m-%d")
     days_num = (end_date-start_date+datetime.timedelta(days=1)).days
     days_offset = days_num + (7 - days_num % 7)
-    end_date = end_date + datetime.timedelta(days=days_offset-days_num)
+    end_date = end_date + datetime.timedelta(days=days_offset-days_num+7)
     return end_date.strftime("%Y-%m-%d")
 
 def predict(repo, path, feature, begin, end):
@@ -63,7 +62,7 @@ def predict(repo, path, feature, begin, end):
     # Always call before time_delay
     end = time_skip_for_predict(begin, end)
     begin = time_delay(begin)
-    
+
     requested_data = pd.read_csv(f"http://ncovid.natalnet.br/datamanager/repo/{repo}/path/{path}/feature/{feature}/begin/{begin}/end/{end}/as-csv", index_col='date')
 
     predicted_values = predict_for_rquest(requested_data)
