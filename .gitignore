@@ -2,6 +2,7 @@
 src/__pycache__/
 src/models/__pycache__/
 dbs/fitted_model/
+.vscode
 
 # keras file
 *.h5
