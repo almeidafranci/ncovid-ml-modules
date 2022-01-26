@@ -1,3 +1,11 @@
+# Project ignore n-covid
+src/__pycache__/
+src/models/__pycache__/
+dbs/fitted_model/
+
+# keras file
+*.h5
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
