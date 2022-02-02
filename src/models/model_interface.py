@@ -34,7 +34,7 @@ class ModelInterface:
     def fit_model(self, x, y, verbose=0):
         self.model.fit(x=x,
                        y=y,
-                       epochs=configs.model_train_epochs,
+                       epochs=500,
                        batch_size=configs.model_batch_size,
                        verbose=verbose,
                        callbacks=[self.stop_training])
